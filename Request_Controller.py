@@ -9,14 +9,10 @@ class Request_Controller:
         self.brightness = 255
         self.modus = 'selectColor'
         self.LedController = LED_Controller.LED_Controller()
-        self.timeToQuit = 0 # The time the While(True) Loop needs to finish
 
     def sortModi(self, jsonObject, Strip):
+        # Stop Actual Led Modus
         self.LedController.stop()
-
-        # Wait some Seconds to close the actual Thread
-        if self.modus != 'selectColor' and self.modus != 'pulse':
-            time.sleep(self.timeToQuit)
             
         self.modus = jsonObject['modus']
         
@@ -36,25 +32,19 @@ class Request_Controller:
             self.g = newColors[1]
             self.b = newColors[2]
 
-        elif self.modus == 'wipe':
+        elif self.modus == 'random':
             speed = jsonObject['speed']
-            self.timeToQuit = round(speed/3) + 1
-            self.LedController.showWipe(Strip, speed, self.r, self.g, self.b)
-            
+            self.LedController.showRandom(Strip, speed, self.r, self.g, self.b)
+
         elif self.modus == 'rainbow':
             speed = jsonObject['speed']
-            self.timeToQuit = (speed + 1) - (speed/6)
             self.LedController.showRainbow(Strip, speed)
-
-        elif self.modus == 'rainbowCircle':
+        
+        elif self.modus == 'wipe':
             speed = jsonObject['speed']
-            self.timeToQuit = round(speed/4) + 1
-            self.LedController.showRainbowCircle(Strip, speed)
+            self.LedController.showWipe(Strip, speed, self.r, self.g, self.b)
+            
 
-        elif self.modus == 'rainbowTheater':
-            speed = jsonObject['speed']
-            self.timeToQuit = speed - (speed/6) + (1/speed * 90)
-            self.LedController.showRainbowTheater(Strip, speed)
 
 
             
